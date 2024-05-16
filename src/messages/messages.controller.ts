@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('messages')
 export class MessagesController {
@@ -11,7 +12,7 @@ export class MessagesController {
   }
 
   @Post()
-  async create(@Body() createMessageDto: any) {
+  async create(@Body() createMessageDto: CreateMessageDto) {
     return this.prisma.message.create({
       data: createMessageDto,
     });
