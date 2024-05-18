@@ -37,9 +37,11 @@ export class MessagesController {
     @Res() res: Response,
   ) {
     try {
+      const parsedPage = parseInt(page, 10);
+      const parsedLimit = parseInt(limit, 10);
       const data = await this.messagesService.getAllMessagesWithImages(
-        parseInt(page),
-        parseInt(limit),
+        parsedPage,
+        parsedLimit,
       );
       res.json(data);
     } catch (error) {
