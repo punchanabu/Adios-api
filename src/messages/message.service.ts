@@ -19,24 +19,30 @@ export class MessagesService {
   async getAllMessagesWithImages(page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
 
-    const [total, messagesWithImages] = await this.prisma.$transaction([
-      this.prisma.message.count({ where: { imageUrl: { not: null } } }),
-      this.prisma.message.findMany({
+    try {
+      const total = await this.prisma.message.count({
+        where: { imageUrl: { not: null } }
+      });
+
+      const messagesWithImages = await this.prisma.message.findMany({
         where: { imageUrl: { not: null } },
         skip,
         take: limit,
-      }),
-    ]);
+      });
 
-    return {
-      data: messagesWithImages,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
+      return {
+        data: messagesWithImages,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.error('Failed to fetch messages with images', error);
+      throw new Error('Failed to fetch message with images');
+    }
   }
 
   async countMessagesByAuthor() {
